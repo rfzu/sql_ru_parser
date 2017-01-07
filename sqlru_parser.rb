@@ -7,10 +7,9 @@ class SqlruParser
     posts = noko.css('table.msgTable')
 
     posts.each do |post|
-      nick = post.css('tr')[1].css('a').text.gsub("\r\n",'').gsub(/^\s+/,'').gsub(/\s+$/,'')
-      # puts "nick: #{nick}"
+      next unless nick = post.css('tr')[1].css('a').first
+      nick = nick.text.gsub("\r\n",'').gsub(/^\s+/,'').gsub(/\s+$/,'')
       next unless nick == 'NePZ'
-      post_text = post.css('tr')[1].css('td.msgBody').to_html.encode('UTF-8').gsub("\r",'').gsub("\t",'').gsub("\n",'')
       file.write(post)
     end
   end
@@ -18,7 +17,10 @@ class SqlruParser
   def save_topic(nickname,url)
     topic_name = url.match(/\/[^\/]+$/)[0].match(/[a-z|0-9|\-]+/)[0]
     file = File.open("#{nickname}/#{topic_name}.html",'w')
-    file.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"../main.css\" media=\"screen\">")
+    # file.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"../main.css\" media=\"screen\">")
+    file.write("<style>\n")
+    file.write(@css)
+    file.write("</style>\n")
 
     while url do
       puts "parse url: #{url}"
@@ -57,6 +59,9 @@ class SqlruParser
   end
 
   def go(nickname)
+    css = File.open("main.css", 'r')
+    @css = css.read
+    css.close
     time = Time.now
     puts 'start'
     begin
@@ -73,4 +78,8 @@ class SqlruParser
   end
 end
 
+
+
 puts SqlruParser.new().go('NePZ')
+
+# SqlruParser.new().save_topic('NePZ',"http://www.sql.ru/forum/1187320/dopolnennaya-realnost?hl=")
