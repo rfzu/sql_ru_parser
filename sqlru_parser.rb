@@ -17,7 +17,6 @@ class SqlruParser
   def save_topic(nickname,url)
     topic_name = url.match(/\/[^\/]+$/)[0].match(/[a-z|0-9|\-]+/)[0]
     file = File.open("#{nickname}/#{topic_name}.html",'w')
-    # file.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"../main.css\" media=\"screen\">")
     file.write("<style>\n")
     file.write(@css)
     file.write("</style>\n")
@@ -78,8 +77,4 @@ class SqlruParser
   end
 end
 
-
-
 puts SqlruParser.new().go('NePZ')
-
-# SqlruParser.new().save_topic('NePZ',"http://www.sql.ru/forum/1187320/dopolnennaya-realnost?hl=")
